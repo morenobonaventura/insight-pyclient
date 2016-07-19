@@ -7,6 +7,7 @@
 
 import requests
 from block import Block
+from exception import APIException
 
 
 class InsightApi(object):
@@ -37,5 +38,7 @@ class InsightApi(object):
         :rtype: Block
         """
         res = self.make_request('block/' + block_hash)
+        if res.status_code != 200:
+            raise APIException("Wrong status code", res.status_code, res.text)
         block = Block(res.text)
         return block
