@@ -91,8 +91,16 @@ class Transaction(object):
     @type outputs: [Output]
     """
 
-    def __init__(self, string_json):
-        parsed = json.loads(string_json)
+    def __init__(self, string_json, already_parsed=False):
+        """
+        :param string_json: The string to parse
+        :param already_parsed: If the json has already been parsed and a dictionary is given as a first argument \
+        instead of a string
+        """
+        if already_parsed:
+            parsed = string_json
+        else:
+            parsed = json.loads(string_json)
         self.txid = parsed["txid"]
         self.version = parsed["version"]
         self.lockTime = parsed["locktime"]

@@ -244,3 +244,43 @@ class InsightApi(object):
         for unspent_output in parsed:
             unspent_list.append(UnspentOutput(unspent_output))
         return unspent_list
+
+    def get_transaction_for_addresses(self, addresses, transactions_from=None, transactions_to=None):
+        """
+        @param addresses: The addresses we wish to get transactions from
+        @param transactions_from: If we don't want to load the transactions for this address. False by default
+        @type transactions_from: nullable int
+        @param transactions_to: Load the transactions hash until transaction number. Not needed by default
+        @type transactions_to: nullable int
+        @return: A maximum of 50 transactions, the numbers of transactions, transactions from and to
+        @rtype: [Transaction], int, int, int
+        """
+        formated_addresses = ','.join(addresses)
+        request_string = 'addrs/' + formated_addresses + '/txs?'
+        if transactions_from is not None:
+            request_string += 'from=' + str(transactions_from) + '&'
+        if transactions_to is not None:
+            request_string += 'to=' + str(transactions_to)
+        res = self.make_request(request_string)
+        if res.status_code != 200:
+            raise APIException("Wrong status code", res.status_code, res.text)
+        parsed = json.loads(res.text)
+        transactions_list = []
+        for transaction in parsed["items"]:
+            transactions_list.append(Transaction(transaction, True))
+        return transactions_list, parsed["totalItems"], parsed["from"], parsed["to"]
+
+    def get_all_transactions_for_address(self, address, tx_from=0, tx_to=50):
+        """
+        Allows to get all the transactions for an address using the get_transaction_for_address method.
+        @param address: The address to get the transactions from
+        @type address: String
+        @param tx_from: Used in the recursion
+        @param tx_to: Used in the recursion
+        @return: The transactions for the address
+        @return: [Transaction]
+        """
+        transactions, total, tx_from, tx_to = self.get_transaction_for_addresses([address], tx_from, tx_to)
+        if tx_to >= total:
+            return transactions
+        return transactions + self.get_all_transactions_for_address(address, tx_from + 50, tx_to + 50)
