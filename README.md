@@ -32,5 +32,5 @@ will just list the prototypes callable methods.
 * `Int/Float get_address_total_received(String address, Boolean inSatoshis=False)`
 * `Int/Float get_address_total_sent(String address, Boolean inSatoshis=False)`
 * `Int/Float get_address_unconfirmed_balance(String address, Boolean inSatoshis=False)`
-* `UnspentOutput get_unsent_outputs(String address)`
 * `[UnspentOutput] get_unsent_output_for_many(String[] addresses)`
+* `[UnspentOutput] get_unsent_outputs(String address)`
