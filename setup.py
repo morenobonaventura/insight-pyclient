@@ -25,5 +25,5 @@ setup(
         "Programming Language :: Python :: 2.7",
         "Topic :: Utilities",
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
-    ],
+    ], requires=['requests']
 )

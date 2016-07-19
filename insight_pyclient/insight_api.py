@@ -7,6 +7,11 @@
 
 import requests
 import json
+import time
+import traceback
+
+from requests.auth import HTTPBasicAuth
+from requests.auth import HTTPDigestAuth
 
 from .block import Block, BlockSummaryPagination
 from .transaction import Transaction
@@ -21,19 +26,67 @@ class InsightApi(object):
 
     @ivar address: The address of the instance of the API. It must end with a slash. Example: http://local.lan/api/
     @type address: String
+    @ivar try_hard: If this option is enabled, the requests will be done in loop while it does not return an http \
+    code equal to 200. See make_request for more details
+    @type try_hard: Boolean
+    @ivar time_multiplier: How the wait time (seconds) will increase with try_hard between each request
+    @ivar max_wait_time: The maximum time (seconds) to wait between two requests in try_hard mode
+    @ivar verbose_try_hard: To display the stacktrace and the incriminated URL when request fails
+    @ivar timeout: The timeout for the requests in seconds
+    @ivar basicAuth: Allows to enable a basic HTTP authentication
+    @type basicAuth: Boolean
+    @ivar basicAuth: Allows to enable a digest HTTP authentication
+    @type basicAuth: Boolean
+    @ivar userName: The username that will be used if the digest or the basic authentication is enabled
+    @type userName: String
+    @ivar password: The password that will be used if the digest or the basic authentication is enabled
+    @type password: String
     """
 
-    def __init__(self, address):
+    def __init__(self, address, try_hard=False):
         self.address = address
+        self.try_hard = try_hard
+        self.time_multiplier = 2
+        self.max_wait_time = 120
+        self.verbose_try_hard = False
+        self.timeout = 1
+        self.basicAuth = False
+        self.digestAuth = False
+        self.userName = None
+        self.password = None
 
-    def make_request(self, url):
+    def make_request(self, url, wait_time=1, expected_http_return=200):
         """
-        Allows to make get request to the API
-        @param url: The
-        @return:
+        Allows to make get request to the API. It can make usage of the try hard option that allows to continue making \
+        requests util is get
+        @param url: The url to request
+        @param wait_time: The time (seconds) to wait before making another request if the try_hard option is enabled
+        @type wait_time: Int
+        @param expected_http_return: Allows to throw an exception if the http return code is not equal to it
+        @type expected_http_return: int
+        @return: The result given by the request module
         """
-        r = requests.get(self.address + url)
-        return r
+        try:
+            if self.digestAuth:
+                res = requests.get(self.address + url, timeout=self.timeout, auth=(self.userName, self.password))
+            elif self.basicAuth:
+                res = requests.get(self.address + url, timeout=self.timeout, auth=HTTPDigestAuth(self.userName, self.password))
+            else:
+                res = requests.get(self.address + url, timeout=self.timeout)
+            if res.status_code != expected_http_return:
+                raise APIException("Wrong status code", res.status_code, res.text, url)
+            return res
+        except Exception as ex:
+            if not self.try_hard:
+                raise ex
+            if self.verbose_try_hard:
+                print(traceback.format_exc())
+                print('Waiting ' + str(wait_time) + ' seconds before next request.')
+            time.sleep(wait_time)
+            wait_time *= self.time_multiplier
+            if wait_time > self.max_wait_time:
+                wait_time = self.max_wait_time
+            return self.make_request(url, wait_time, expected_http_return)
 
     def get_block(self, block_hash):
         """
@@ -43,8 +96,6 @@ class InsightApi(object):
         @rtype: Block
         """
         res = self.make_request('block/' + block_hash)
-        if res.status_code != 200:
-            raise APIException("Wrong status code", res.status_code, res.text)
         block = Block(res.text)
         return block
 
@@ -56,8 +107,6 @@ class InsightApi(object):
         @rtype: String
         """
         res = self.make_request('block-index/' + str(height))
-        if res.status_code != 200:
-            raise APIException("Wrong status code", res.status_code, res.text)
         parsed = json.loads(res.text)
         return parsed["blockHash"]
 
@@ -69,8 +118,6 @@ class InsightApi(object):
         @rtype: String
         """
         res = self.make_request('rawblock/' + block_hash)
-        if res.status_code != 200:
-            raise APIException("Wrong status code", res.status_code, res.text)
         parsed = json.loads(res.text)
         return parsed["rawblock"]
 
@@ -85,8 +132,6 @@ class InsightApi(object):
         @rtype: [Block]
         """
         res = self.make_request('blocks?limit=' + str(max_number) + '&blockDate=' + date)
-        if res.status_code != 200:
-            raise APIException("Wrong status code", res.status_code, res.text)
         list_res = []
         parsed = json.loads(res.text)
         for light_json_block in parsed["blocks"]:
@@ -103,8 +148,6 @@ class InsightApi(object):
         @rtype: Transaction
         """
         res = self.make_request('tx/' + transaction_hash)
-        if res.status_code != 200:
-            raise APIException("Wrong status code", res.status_code, res.text)
         tx = Transaction(res.text)
         return tx
 
@@ -116,8 +159,6 @@ class InsightApi(object):
         @rtype: String
         """
         res = self.make_request('rawtx/' + transaction_hash)
-        if res.status_code != 200:
-            raise APIException("Wrong status code", res.status_code, res.text)
         parsed = json.loads(res.text)
         return parsed["rawtx"]
 
@@ -144,8 +185,6 @@ class InsightApi(object):
         if transaction_to is not None:
             request_string += 'to=' + str(transaction_to)
         res = self.make_request(request_string)
-        if res.status_code != 200:
-            raise APIException("Wrong status code", res.status_code, res.text)
         result = Address(res.text)
         return result
 
@@ -159,11 +198,9 @@ class InsightApi(object):
         @rtype: Float if we returns Bitcoins, else Int
         """
         res = self.make_request('addr/' + address + '/balance')
-        if res.status_code != 200:
-            raise APIException("Wrong status code", res.status_code, res.text)
         if in_satoshis:
             return int(res.text)
-        return utils.satoshi_to_bitcoin(res.text)
+        return satoshi_to_bitcoin(res.text)
 
     def get_address_total_received(self, address, in_satoshis=False):
         """
@@ -175,11 +212,9 @@ class InsightApi(object):
         @rtype: Float if we returns Bitcoins, else Int
         """
         res = self.make_request('addr/' + address + '/totalReceived')
-        if res.status_code != 200:
-            raise APIException("Wrong status code", res.status_code, res.text)
         if in_satoshis:
             return int(res.text)
-        return utils.satoshi_to_bitcoin(res.text)
+        return satoshi_to_bitcoin(res.text)
 
     def get_address_total_sent(self, address, in_satoshis=False):
         """
@@ -191,11 +226,9 @@ class InsightApi(object):
         @rtype: Float if we returns Bitcoins, else Int
         """
         res = self.make_request('addr/' + address + '/totalSent')
-        if res.status_code != 200:
-            raise APIException("Wrong status code", res.status_code, res.text)
         if in_satoshis:
             return int(res.text)
-        return utils.satoshi_to_bitcoin(res.text)
+        return satoshi_to_bitcoin(res.text)
 
     def get_address_unconfirmed_balance(self, address, in_satoshis=False):
         """
@@ -207,11 +240,9 @@ class InsightApi(object):
         @rtype: Float if we returns Bitcoins, else Int
         """
         res = self.make_request('addr/' + address + '/unconfirmedBalance')
-        if res.status_code != 200:
-            raise APIException("Wrong status code", res.status_code, res.text)
         if in_satoshis:
             return int(res.text)
-        return utils.satoshi_to_bitcoin(res.text)
+        return satoshi_to_bitcoin(res.text)
 
     def get_unsent_outputs(self, address):
         """
@@ -220,8 +251,6 @@ class InsightApi(object):
         @rtype: [UnspentOutput]
         """
         res = self.make_request('addr/' + address + '/utxo')
-        if res.status_code != 200:
-            raise APIException("Wrong status code", res.status_code, res.text)
         parsed = json.loads(res.text)
         unspent_list = []
         for unspent_output in parsed:
@@ -237,8 +266,6 @@ class InsightApi(object):
         """
         formated_addresses = ','.join(addresses)
         res = self.make_request('addrs/' + formated_addresses + '/utxo')
-        if res.status_code != 200:
-            raise APIException("Wrong status code", res.status_code, res.text)
         parsed = json.loads(res.text)
         unspent_list = []
         for unspent_output in parsed:
@@ -262,8 +289,6 @@ class InsightApi(object):
         if transactions_to is not None:
             request_string += 'to=' + str(transactions_to)
         res = self.make_request(request_string)
-        if res.status_code != 200:
-            raise APIException("Wrong status code", res.status_code, res.text)
         parsed = json.loads(res.text)
         transactions_list = []
         for transaction in parsed["items"]:

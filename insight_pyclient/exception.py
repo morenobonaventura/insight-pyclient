@@ -29,16 +29,20 @@ class APIException(InsightPyClientException):
     @type code: Integer
     @ivar ret: The return code of the request
     @type ret: String
+    @ivar url: The url the program is trying to reach when the request failed
+    @type url: String
     """
 
-    def __init__(self, message, code, ret):
+    def __init__(self, message, code, ret, url):
         super(InsightPyClientException, self).__init__(message)
         self.code = code
         self.ret = ret
         self.message = message
+        self.url = url
 
     def __str__(self):
-        return "HTTPCode " + str(self.code) + ": " + self.ret
+        return self.message + " HTTPCode " + str(
+            self.code) + ' while trying to access ' + self.url + '.'
 
 
 class ParamException(InsightPyClientException):
@@ -52,4 +56,3 @@ class ParamException(InsightPyClientException):
     def __init__(self, message):
         super(InsightPyClientException, self).__init__(message)
         self.message = message
-
