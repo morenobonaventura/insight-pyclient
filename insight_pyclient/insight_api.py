@@ -9,6 +9,7 @@ import requests
 from block import Block, BlockSummaryPagination
 from transaction import Transaction
 from exception import APIException, ParamException
+from address import Address
 import json
 
 
@@ -117,3 +118,31 @@ class InsightApi(object):
             raise APIException("Wrong status code", res.status_code, res.text)
         parsed = json.loads(res.text)
         return parsed["rawtx"]
+
+    def get_address(self, address, no_transactions=False, transaction_from=None, transaction_to=None):
+        """
+        @param address: The address we want to get from the service
+        @ivar address: String
+        @param no_transactions: If we don't want to load the transactions for this address. False by default
+        @param no_transactions: Boolean
+        @param transaction_from: Load the transactions hash from transaction number. Not needed by default
+        @param transaction_from: int
+        @param transaction_to: Load the transactions hash until transaction number. Not needed by default
+        @param transaction_to: int
+        @return: The formated details about the address
+        @rtype: Address
+        """
+        request_string = "addr/" + address + "?"
+        if no_transactions and (transaction_from is not None or transaction_to is not None):
+            raise ParamException("You can't ask no transaction and give a range for it")
+        if no_transactions:
+            request_string += 'noTxList=1'
+        if transaction_from is not None:
+            request_string += 'from=' + str(transaction_from) + '&'
+        if transaction_to is not None:
+            request_string += 'to=' + str(transaction_to)
+        res = self.make_request(request_string)
+        if res.status_code != 200:
+            raise APIException("Wrong status code", res.status_code, res.text)
+        result = Address(res.text)
+        return result

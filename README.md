@@ -27,3 +27,4 @@ will just list the prototypes callable methods.
 
 ## Address
 
+* `Address get_address(String address, Bool no_transactions=False, int transaction_from=None, int transaction_to=None)`

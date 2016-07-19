@@ -37,6 +37,9 @@ class APIException(InsightPyClientException):
         self.ret = ret
         self.message = message
 
+    def __str__(self):
+        return "HTTPCode " + str(self.code) + ": " + self.ret
+
 
 class ParamException(InsightPyClientException):
     """
