@@ -17,3 +17,4 @@ will just list the prototypes callable methods.
 
 * `Block get_block(Sting blockHash)`
 * `String get_block_hash(int blockHeight)`
+* `String get_raw_block(String blockHash)`

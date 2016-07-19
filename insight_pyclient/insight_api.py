@@ -56,3 +56,16 @@ class InsightApi(object):
             raise APIException("Wrong status code", res.status_code, res.text)
         parsed = json.loads(res.text)
         return parsed["blockHash"]
+
+    def get_raw_block(self, block_hash):
+        """
+        :param block_hash: The hash of the block to get
+        :type block_hash: Int
+        :return: The raw block
+        :rtype: String
+        """
+        res = self.make_request('rawblock/' + block_hash)
+        if res.status_code != 200:
+            raise APIException("Wrong status code", res.status_code, res.text)
+        parsed = json.loads(res.text)
+        return parsed["rawblock"]
