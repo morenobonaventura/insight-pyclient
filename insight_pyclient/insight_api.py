@@ -34,8 +34,8 @@ class InsightApi(object):
     @ivar timeout: The timeout for the requests in seconds
     @ivar basicAuth: Allows to enable a basic HTTP authentication
     @type basicAuth: Boolean
-    @ivar basicAuth: Allows to enable a digest HTTP authentication
-    @type basicAuth: Boolean
+    @ivar digestAuth: Allows to enable a digest HTTP authentication
+    @type digestAuth: Boolean
     @ivar userName: The username that will be used if the digest or the basic authentication is enabled
     @type userName: String
     @ivar password: The password that will be used if the digest or the basic authentication is enabled
@@ -164,7 +164,6 @@ class InsightApi(object):
     def get_address(self, address, no_transactions=False, transaction_from=None, transaction_to=None):
         """
         @param address: The address we want to get from the service
-        @ivar address: String
         @param no_transactions: If we don't want to load the transactions for this address. False by default
         @param no_transactions: Boolean
         @param transaction_from: Load the transactions hash from transaction number. Not needed by default
@@ -302,7 +301,7 @@ class InsightApi(object):
         @param tx_from: Used in the recursion
         @param tx_to: Used in the recursion
         @return: The transactions for the address
-        @return: [Transaction]
+        @rtype: [Transaction]
         """
         transactions, total, tx_from, tx_to = self.get_transaction_for_addresses([address], tx_from, tx_to)
         if tx_to >= total:
