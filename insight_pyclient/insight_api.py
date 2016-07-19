@@ -227,3 +227,20 @@ class InsightApi(object):
         for unspent_output in parsed:
             unspent_list.append(UnspentOutput(unspent_output))
         return unspent_list
+
+    def get_unsent_output_for_many(self, addresses):
+        """
+        @param addresses: The addresses to get the details for
+        @type addresses: [String]
+        @return: The unspent outputs for the addresses
+        @rtype: [UnspentOutput]
+        """
+        formated_addresses = ','.join(addresses)
+        res = self.make_request('addrs/' + formated_addresses + '/utxo')
+        if res.status_code != 200:
+            raise APIException("Wrong status code", res.status_code, res.text)
+        parsed = json.loads(res.text)
+        unspent_list = []
+        for unspent_output in parsed:
+            unspent_list.append(UnspentOutput(unspent_output))
+        return unspent_list
