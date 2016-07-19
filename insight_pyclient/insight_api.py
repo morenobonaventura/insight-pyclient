@@ -8,6 +8,7 @@
 import requests
 from block import Block
 from exception import APIException
+import json
 
 
 class InsightApi(object):
@@ -42,3 +43,16 @@ class InsightApi(object):
             raise APIException("Wrong status code", res.status_code, res.text)
         block = Block(res.text)
         return block
+
+    def get_block_hash(self, height):
+        """
+        :param height: The height of the block to get
+        :type height: Int
+        :return: The hash of the block
+        :rtype: String
+        """
+        res = self.make_request('block-index/' + str(height))
+        if res.status_code != 200:
+            raise APIException("Wrong status code", res.status_code, res.text)
+        parsed = json.loads(res.text)
+        return parsed["blockHash"]
