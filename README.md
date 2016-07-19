@@ -19,3 +19,8 @@ will just list the prototypes callable methods.
 * `String get_block_hash(int blockHeight)`
 * `String get_raw_block(String blockHash)`
 * `[Block], length, BlockSummaryPagination get_block_summaries(int maxNumber, String date)`
+
+## Transaction
+
+* `Transaction get_transaction(String transaction_hash)`
+* `String get_raw_transaction(String transaction hash)`
