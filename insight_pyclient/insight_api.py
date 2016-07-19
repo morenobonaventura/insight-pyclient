@@ -10,7 +10,6 @@ import json
 import time
 import traceback
 
-from requests.auth import HTTPBasicAuth
 from requests.auth import HTTPDigestAuth
 
 from .block import Block, BlockSummaryPagination
