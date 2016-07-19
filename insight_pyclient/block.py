@@ -51,6 +51,11 @@ class Block(object):
     @type poolName: String
     @ivar poolUrl: The URL of the pool that succeed mining the block
     @type poolUrl: String
+    @ivar txLength: The length of the transaction (only on the summary version)
+    @type txLength: Integer
+    @ivar partOfSummary: On some cases, only a short version of the block may be loaded from the API, will be true if \
+    it is the case. If the class was instantiated empty, will be null.
+    @type partOfSummary: nullable Boolean
     """
 
     def __init__(self, json_string):
@@ -61,7 +66,6 @@ class Block(object):
         self.version = parsed["version"]
         self.tx = parsed["tx"]
         self.time = datetime.datetime.fromtimestamp(parsed['time'])
-
         self.nonce = parsed["nonce"]
         self.bits = parsed["bits"]
         self.difficulty = parsed["difficulty"]
@@ -73,3 +77,72 @@ class Block(object):
         self.isMainChain = parsed["isMainChain"]
         self.poolName = parsed["poolInfo"]["poolName"]
         self.poolUrl = parsed["poolInfo"]["url"]
+
+        self.partOfSummary = False
+        self.txLength = 0
+
+    def __init__(self):
+        self.hash = ""
+        self.size = 0
+        self.height = 0
+        self.version = 0
+        self.tx = []
+        self.time = datetime.datetime(1000, 1, 1)
+        self.nonce = 0
+        self.bits = ""
+        self.difficulty = 0
+        self.chainWork = ""
+        self.confirmations = 0
+        self.previousBlockHash = ""
+        self.nextBlockHash = ""
+        self.reward = 0
+        self.isMainChain = False
+        self.poolName = ""
+        self.poolUrl = ""
+        self.partOfSummary = False
+        self.txLength = 0
+
+    def parse_summary(self, loaded_json):
+        """
+        Used with get_block_summaries to get a light version
+        :param loaded_json: The part of the json return by the API that contains the block to parse
+        :type loaded_json: Dictionnary parsed by json.loads
+        """
+        self.partOfSummary = True
+        self.hash = loaded_json["hash"]
+        self.size = loaded_json["size"]
+        self.txLength = loaded_json["txlength"]
+        self.time = datetime.datetime.fromtimestamp(loaded_json['time'])
+        if "poolInfo" in loaded_json:
+            if "poolName" in loaded_json["poolInfo"]:
+                self.poolName = loaded_json["poolInfo"]["poolName"]
+            if "url" in loaded_json["poolInfo"]:
+                self.poolUrl = loaded_json["poolInfo"]["url"]
+
+
+class BlockSummaryPagination(object):
+    """
+    Will be used to store the pagination result of the block summary.
+    :type nextDate: datetime (nullable)
+    :type prevDate: dateTime (nullable)
+    :type currentTs: int
+    :type currentDate: dateTime
+    :type isToday: Boolean
+    :type more: Boolean
+    :type moreTs: int
+    """
+
+    def __init__(self, parsed_json):
+        if "next" in parsed_json and parsed_json["next"] is not "":
+            self.nextDate = datetime.datetime.strptime(parsed_json["next"], "%Y-%m-%d").strftime("%d-%m-%Y")
+        else:
+            self.nextDate = None
+        if "prev" in parsed_json and parsed_json["prev"] is not "":
+            self.prevDate = datetime.datetime.strptime(parsed_json["prev"], "%Y-%m-%d").strftime("%d-%m-%Y")
+        else:
+            self.prevDate = None
+        self.currentTs = parsed_json["currentTs"]
+        self.currentDate = datetime.datetime.strptime(parsed_json["current"], "%Y-%m-%d").strftime("%d-%m-%Y")
+        self.isToday = parsed_json["isToday"]
+        self.more = parsed_json["more"]
+        self.moreTs = parsed_json["moreTs"]

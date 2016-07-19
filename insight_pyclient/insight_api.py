@@ -6,7 +6,7 @@
 """
 
 import requests
-from block import Block
+from block import Block, BlockSummaryPagination
 from exception import APIException
 import json
 
@@ -69,3 +69,24 @@ class InsightApi(object):
             raise APIException("Wrong status code", res.status_code, res.text)
         parsed = json.loads(res.text)
         return parsed["rawblock"]
+
+    def get_block_summaries(self, max_number, date):
+        """
+        Returns the summaries of the blocks for the given day
+        :param max_number: The maximum number of blocks to get
+        :type max_number: Integer
+        :param date: The date we are interested in
+        :type date: String [YYYY-MM-DD]
+        :return: A list of light blocks
+        :rtype: [Block]
+        """
+        res = self.make_request('blocks?limit=' + str(max_number) + '&blockDate=' + date)
+        if res.status_code != 200:
+            raise APIException("Wrong status code", res.status_code, res.text)
+        list_res = []
+        parsed = json.loads(res.text)
+        for light_json_block in parsed["blocks"]:
+            tmp = Block()
+            tmp.parse_summary(light_json_block)
+            list_res.append(tmp)
+        return list_res, parsed["length"], BlockSummaryPagination(parsed["pagination"])
