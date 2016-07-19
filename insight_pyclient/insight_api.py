@@ -11,7 +11,7 @@ import json
 from block import Block, BlockSummaryPagination
 from transaction import Transaction
 from exception import APIException, ParamException
-from address import Address
+from address import Address, UnspentOutput
 import utils
 
 
@@ -212,3 +212,18 @@ class InsightApi(object):
         if in_satoshis:
             return int(res.text)
         return utils.satoshi_to_bitcoin(res.text)
+
+    def get_unsent_outputs(self, address):
+        """
+        @param address: The address to get the details for
+        @return: The unspent outputs for the address
+        @rtype: [UnspentOutput]
+        """
+        res = self.make_request('addr/' + address + '/utxo')
+        if res.status_code != 200:
+            raise APIException("Wrong status code", res.status_code, res.text)
+        parsed = json.loads(res.text)
+        unspent_list = []
+        for unspent_output in parsed:
+            unspent_list.append(UnspentOutput(unspent_output))
+        return unspent_list

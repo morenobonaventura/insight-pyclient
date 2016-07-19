@@ -53,7 +53,8 @@ class UnspentOutput(object):
     @type amount: Float
     @type satoshis: Int
     @type confirmations: Int
-    @type ts: Int
+    @type ts: Int (Nullable)
+    @type height: Int (Nullable)
     """
 
     def __init__(self, parsed_json):
@@ -64,4 +65,11 @@ class UnspentOutput(object):
         self.amount = parsed_json['amount']
         self.satoshis = parsed_json['satoshis']
         self.confirmations = parsed_json['confirmations']
-        self.ts = parsed_json['ts']
+        if "ts" in parsed_json:
+            self.ts = parsed_json['ts']
+        else:
+            self.ts = None
+        if "height" in parsed_json:
+            self.height = parsed_json["height"]
+        else:
+            self.height = None
