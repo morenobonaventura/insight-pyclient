@@ -7,6 +7,7 @@
 
 import requests
 from block import Block, BlockSummaryPagination
+from transaction import Transaction
 from exception import APIException
 import json
 
@@ -90,3 +91,29 @@ class InsightApi(object):
             tmp.parse_summary(light_json_block)
             list_res.append(tmp)
         return list_res, parsed["length"], BlockSummaryPagination(parsed["pagination"])
+
+    def get_transaction(self, transaction_hash):
+        """
+        :param transaction_hash: The hash of the transaction to get
+        :type transaction_hash: String
+        :return: The transaction from the API
+        :rtype: Transaction
+        """
+        res = self.make_request('tx/' + transaction_hash)
+        if res.status_code != 200:
+            raise APIException("Wrong status code", res.status_code, res.text)
+        tx = Transaction(res.text)
+        return tx
+
+    def get_raw_transaction(self, transaction_hash):
+        """
+        :param transaction_hash: The hash of the transaction to get
+        :type transaction_hash: String
+        :return: The raw transaction
+        :rtype: String
+        """
+        res = self.make_request('rawtx/' + transaction_hash)
+        if res.status_code != 200:
+            raise APIException("Wrong status code", res.status_code, res.text)
+        parsed = json.loads(res.text)
+        return parsed["rawtx"]

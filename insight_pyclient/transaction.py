@@ -71,7 +71,7 @@ class TransactionOutput(object):
             self.asm = parsed_json["asm"]
             self.addresses = parsed_json["addresses"]
             self.type = parsed_json["type"]
-            
+
 
 class Transaction(object):
     """
