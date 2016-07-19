@@ -1,6 +1,6 @@
 # Insight-pyclient
 
-This module allows to interact with the Bitpay's [Insight-API](https://github.com/bitpay/insight-api).
+This package allows to interact with the Bitpay's [Insight-API](https://github.com/bitpay/insight-api).
 
 # Usage
 

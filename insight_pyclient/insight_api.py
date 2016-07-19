@@ -8,13 +8,13 @@
 import requests
 from block import Block, BlockSummaryPagination
 from transaction import Transaction
-from exception import APIException
+from exception import APIException, ParamException
 import json
 
 
 class InsightApi(object):
     """
-    This class one instantiated allows to make requests to the given insight api instance.
+    This class once instantiated allows to make requests to the given insight api instance.
 
     @ivar address: The address of the instance of the API. It must end with a slash. Example: http://local.lan/api/
     @type address: String
@@ -26,18 +26,18 @@ class InsightApi(object):
     def make_request(self, url):
         """
         Allows to make get request to the API
-        :param url: The
-        :return:
+        @param url: The
+        @return:
         """
         r = requests.get(self.address + url)
         return r
 
     def get_block(self, block_hash):
         """
-        :param block_hash: The hash of the block to get
-        :type block_hash: String
-        :return: The block from the API
-        :rtype: Block
+        @param block_hash: The hash of the block to get
+        @type block_hash: String
+        @return: The block from the API
+        @rtype: Block
         """
         res = self.make_request('block/' + block_hash)
         if res.status_code != 200:
@@ -47,10 +47,10 @@ class InsightApi(object):
 
     def get_block_hash(self, height):
         """
-        :param height: The height of the block to get
-        :type height: Int
-        :return: The hash of the block
-        :rtype: String
+        @param height: The height of the block to get
+        @type height: Int
+        @return: The hash of the block
+        @rtype: String
         """
         res = self.make_request('block-index/' + str(height))
         if res.status_code != 200:
@@ -60,10 +60,10 @@ class InsightApi(object):
 
     def get_raw_block(self, block_hash):
         """
-        :param block_hash: The hash of the block to get
-        :type block_hash: Int
-        :return: The raw block
-        :rtype: String
+        @param block_hash: The hash of the block to get
+        @type block_hash: Int
+        @return: The raw block
+        @rtype: String
         """
         res = self.make_request('rawblock/' + block_hash)
         if res.status_code != 200:
@@ -74,12 +74,12 @@ class InsightApi(object):
     def get_block_summaries(self, max_number, date):
         """
         Returns the summaries of the blocks for the given day
-        :param max_number: The maximum number of blocks to get
-        :type max_number: Integer
-        :param date: The date we are interested in
-        :type date: String [YYYY-MM-DD]
-        :return: A list of light blocks
-        :rtype: [Block]
+        @param max_number: The maximum number of blocks to get
+        @type max_number: Integer
+        @param date: The date we are interested in
+        @type date: String [YYYY-MM-DD]
+        @return: A list of light blocks
+        @rtype: [Block]
         """
         res = self.make_request('blocks?limit=' + str(max_number) + '&blockDate=' + date)
         if res.status_code != 200:
@@ -94,10 +94,10 @@ class InsightApi(object):
 
     def get_transaction(self, transaction_hash):
         """
-        :param transaction_hash: The hash of the transaction to get
-        :type transaction_hash: String
-        :return: The transaction from the API
-        :rtype: Transaction
+        @param transaction_hash: The hash of the transaction to get
+        @type transaction_hash: String
+        @return: The transaction from the API
+        @rtype: Transaction
         """
         res = self.make_request('tx/' + transaction_hash)
         if res.status_code != 200:
@@ -107,10 +107,10 @@ class InsightApi(object):
 
     def get_raw_transaction(self, transaction_hash):
         """
-        :param transaction_hash: The hash of the transaction to get
-        :type transaction_hash: String
-        :return: The raw transaction
-        :rtype: String
+        @param transaction_hash: The hash of the transaction to get
+        @type transaction_hash: String
+        @return: The raw transaction
+        @rtype: String
         """
         res = self.make_request('rawtx/' + transaction_hash)
         if res.status_code != 200:

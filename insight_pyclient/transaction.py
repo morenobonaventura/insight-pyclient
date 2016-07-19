@@ -12,16 +12,16 @@ import datetime
 class TransactionInput(object):
     """
     Will contain the input of a transaction.
-    :type txid: String
-    :type vout: int
-    :type scriptSigAsm: String
-    :type scriptSigHex: String
-    :type sequence: int
-    :type n: int
-    :type addr: string
-    :type valueSat: int
-    :type value: Float
-    :type doubleSpentTxID: nullable (string ?)
+    @type txid: String
+    @type vout: int
+    @type scriptSigAsm: String
+    @type scriptSigHex: String
+    @type sequence: int
+    @type n: int
+    @type addr: string
+    @type valueSat: int
+    @type value: Float
+    @type doubleSpentTxID: nullable (string ?)
     """
 
     def __init__(self, parsed_json):
@@ -41,12 +41,12 @@ class TransactionOutput(object):
     """
     Will be used to store the outputs of a transaction.
 
-    :type value: Float
-    :type n: int
-    :type spentTxId: String
-    :type spentIndex: int
-    :type spentHeight: int
-    :type scriptPubKey: TransactionOutput.ScriptPublicKey
+    @type value: Float
+    @type n: int
+    @type spentTxId: String
+    @type spentIndex: int
+    @type spentHeight: int
+    @type scriptPubKey: TransactionOutput.ScriptPublicKey
     """
 
     def __init__(self, parsed_json):
@@ -60,10 +60,10 @@ class TransactionOutput(object):
     class ScriptPublicKey(object):
         """
         To store the scriptPubKey
-        :type hex: String
-        :type asm: String
-        :type addresses = [String]
-        :type type: String
+        @type hex: String
+        @type asm: String
+        @type addresses = [String]
+        @type type: String
         """
 
         def __init__(self, parsed_json):
@@ -77,18 +77,18 @@ class Transaction(object):
     """
     Will be used to store the details of a transaction
 
-    :type txid: String
-    :type version: int
-    :type lockTime: int
-    :type blockHeight: int
-    :type confirmations: int
-    :type time: datetime
-    :type valueOut: Float
-    :type size: int
-    :type valueIn: Float
-    :type fees: Float
-    :type inputs: [Input]
-    :type outputs: [Output]
+    @type txid: String
+    @type version: int
+    @type lockTime: int
+    @type blockHeight: int
+    @type confirmations: int
+    @type time: datetime
+    @type valueOut: Float
+    @type size: int
+    @type valueIn: Float
+    @type fees: Float
+    @type inputs: [Input]
+    @type outputs: [Output]
     """
 
     def __init__(self, string_json):

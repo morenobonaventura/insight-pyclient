@@ -17,10 +17,6 @@ class Block(object):
     @type hash: String
     @ivar size: The size of the block
     @type hash: String
-    @ivar height: The height of the block
-    @type height: Integer
-    @ivar height: The height of the block
-    @type height: Integer
     @ivar height: The version of the block
     @type height: Integer
     @ivar merkleroot: The merkleroot of the block
@@ -105,8 +101,8 @@ class Block(object):
     def parse_summary(self, loaded_json):
         """
         Used with get_block_summaries to get a light version
-        :param loaded_json: The part of the json return by the API that contains the block to parse
-        :type loaded_json: Dictionnary parsed by json.loads
+        @param loaded_json: The part of the json return by the API that contains the block to parse
+        @type loaded_json: Dictionnary parsed by json.loads
         """
         self.partOfSummary = True
         self.hash = loaded_json["hash"]
@@ -123,13 +119,13 @@ class Block(object):
 class BlockSummaryPagination(object):
     """
     Will be used to store the pagination result of the block summary.
-    :type nextDate: datetime (nullable)
-    :type prevDate: dateTime (nullable)
-    :type currentTs: int
-    :type currentDate: dateTime
-    :type isToday: Boolean
-    :type more: Boolean
-    :type moreTs: int
+    @type nextDate: datetime (nullable)
+    @type prevDate: dateTime (nullable)
+    @type currentTs: int
+    @type currentDate: dateTime
+    @type isToday: Boolean
+    @type more: Boolean
+    @type moreTs: int
     """
 
     def __init__(self, parsed_json):

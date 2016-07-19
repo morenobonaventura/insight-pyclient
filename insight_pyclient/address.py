@@ -12,19 +12,19 @@ class Address(object):
     """
     Will be used to store the detail of an address obtained from the web service
 
-    :type address: String
-    :type balance: Float
-    :type balanceSat: Double
-    :type totalReceived: Float
-    :type totalReceivedSat: Double
-    :type totalSent: Float
-    :type totalSentSat: Double
-    :type totalReceivedSat: Double
-    :type unconfirmedBalance: Float
-    :type unconfirmedBalanceSat: Double
-    :type unconfirmedTxAppearances: Int
-    :type txAppearances: int
-    :type transactions: [String]
+    @type address: String
+    @type balance: Float
+    @type balanceSat: Double
+    @type totalReceived: Float
+    @type totalReceivedSat: Double
+    @type totalSent: Float
+    @type totalSentSat: Double
+    @type totalReceivedSat: Double
+    @type unconfirmedBalance: Float
+    @type unconfirmedBalanceSat: Double
+    @type unconfirmedTxAppearances: Int
+    @type txAppearances: int
+    @type transactions: [String]
     """
 
     def __init__(self, string_json):
@@ -41,4 +41,3 @@ class Address(object):
         self.unconfirmedTxAppearances = parsed["unconfirmedTxApperances"]
         self.txAppearances = parsed["txApperances"]
         self.transactions = parsed["transactions"]
-    
