@@ -8,11 +8,11 @@
 import requests
 import json
 
-from block import Block, BlockSummaryPagination
-from transaction import Transaction
-from exception import APIException, ParamException
-from address import Address, UnspentOutput
-import utils
+from .block import Block, BlockSummaryPagination
+from .transaction import Transaction
+from .exception import APIException, ParamException
+from .address import Address, UnspentOutput
+from .utils import *
 
 
 class InsightApi(object):
