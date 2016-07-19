@@ -41,3 +41,27 @@ class Address(object):
         self.unconfirmedTxAppearances = parsed["unconfirmedTxApperances"]
         self.txAppearances = parsed["txApperances"]
         self.transactions = parsed["transactions"]
+
+
+class UnspentOutput(object):
+    """
+    Will be used to store the unsent outputs of some address
+    @type address: String
+    @type txid: String
+    @type vout: Int
+    @type scriptPubKey: String
+    @type amount: Float
+    @type satoshis: Int
+    @type confirmations: Int
+    @type ts: Int
+    """
+
+    def __init__(self, parsed_json):
+        self.address = parsed_json['address']
+        self.txid = parsed_json['txid']
+        self.vout = parsed_json['vout']
+        self.scriptPubKey = parsed_json['scriptPubKey']
+        self.amount = parsed_json['amount']
+        self.satoshis = parsed_json['satoshis']
+        self.confirmations = parsed_json['confirmations']
+        self.ts = parsed_json['ts']
