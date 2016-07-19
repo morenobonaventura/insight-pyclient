@@ -6,11 +6,13 @@
 """
 
 import requests
+import json
+
 from block import Block, BlockSummaryPagination
 from transaction import Transaction
 from exception import APIException, ParamException
 from address import Address
-import json
+import utils
 
 
 class InsightApi(object):
@@ -146,3 +148,67 @@ class InsightApi(object):
             raise APIException("Wrong status code", res.status_code, res.text)
         result = Address(res.text)
         return result
+
+    def get_address_balance(self, address, in_satoshis=False):
+        """
+        @param address: The address we wish to get details from
+        @type address: String
+        @param in_satoshis: If we want to get the result in Satoshis, False by default
+        @type in_satoshis: Boolean
+        @return: The actual balance of the address
+        @rtype: Float if we returns Bitcoins, else Int
+        """
+        res = self.make_request('addr/' + address + '/balance')
+        if res.status_code != 200:
+            raise APIException("Wrong status code", res.status_code, res.text)
+        if in_satoshis:
+            return int(res.text)
+        return utils.satoshi_to_bitcoin(res.text)
+
+    def get_address_total_received(self, address, in_satoshis=False):
+        """
+        @param address: The address we wish to get details from
+        @type address: String
+        @param in_satoshis: If we want to get the result in Satoshis, False by default
+        @type in_satoshis: Boolean
+        @return: Returns the total sum of money received by this address
+        @rtype: Float if we returns Bitcoins, else Int
+        """
+        res = self.make_request('addr/' + address + '/totalReceived')
+        if res.status_code != 200:
+            raise APIException("Wrong status code", res.status_code, res.text)
+        if in_satoshis:
+            return int(res.text)
+        return utils.satoshi_to_bitcoin(res.text)
+
+    def get_address_total_sent(self, address, in_satoshis=False):
+        """
+        @param address: The address we wish to get details from
+        @type address: String
+        @param in_satoshis: If we want to get the result in Satoshis, False by default
+        @type in_satoshis: Boolean
+        @return: Returns the total sum of money sent by this address
+        @rtype: Float if we returns Bitcoins, else Int
+        """
+        res = self.make_request('addr/' + address + '/totalSent')
+        if res.status_code != 200:
+            raise APIException("Wrong status code", res.status_code, res.text)
+        if in_satoshis:
+            return int(res.text)
+        return utils.satoshi_to_bitcoin(res.text)
+
+    def get_address_unconfirmed_balance(self, address, in_satoshis=False):
+        """
+        @param address: The address we wish to get details from
+        @type address: String
+        @param in_satoshis: If we want to get the result in Satoshis, False by default
+        @type in_satoshis: Boolean
+        @return: Returns the total unconfirmed balance for the address
+        @rtype: Float if we returns Bitcoins, else Int
+        """
+        res = self.make_request('addr/' + address + '/unconfirmedBalance')
+        if res.status_code != 200:
+            raise APIException("Wrong status code", res.status_code, res.text)
+        if in_satoshis:
+            return int(res.text)
+        return utils.satoshi_to_bitcoin(res.text)
