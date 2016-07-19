@@ -24,3 +24,6 @@ will just list the prototypes callable methods.
 
 * `Transaction get_transaction(String transaction_hash)`
 * `String get_raw_transaction(String transaction hash)`
+
+## Address
+
