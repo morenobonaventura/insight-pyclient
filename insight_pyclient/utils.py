@@ -21,10 +21,10 @@ def satoshi_to_bitcoin(satoshis):
 
 def bitcoin_to_satoshi(bitcoins):
     """
-        Converts the given value from Bitcoin to Satoshi
-        @param bitcoins: The amount to convert
-        @param bitcoins: int
-        @return: The converted value
-        @rtype: Intr
-        """
+    Converts the given value from Bitcoin to Satoshi
+    @param bitcoins: The amount to convert
+    @param bitcoins: int
+    @return: The converted value
+    @rtype: Intr
+    """
     return int(bitcoins * 100000000)
