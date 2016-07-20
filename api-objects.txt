@@ -7,8 +7,6 @@ insight_pyclient.block.__package__	insight_pyclient.block-module.html#__package_
 insight_pyclient.exception	insight_pyclient.exception-module.html
 insight_pyclient.exception.__package__	insight_pyclient.exception-module.html#__package__
 insight_pyclient.insight_api	insight_pyclient.insight_api-module.html
-insight_pyclient.insight_api.satoshi_to_bitcoin	insight_pyclient.utils-module.html#satoshi_to_bitcoin
-insight_pyclient.insight_api.bitcoin_to_satoshi	insight_pyclient.utils-module.html#bitcoin_to_satoshi
 insight_pyclient.insight_api.__package__	insight_pyclient.insight_api-module.html#__package__
 insight_pyclient.transaction	insight_pyclient.transaction-module.html
 insight_pyclient.transaction.__package__	insight_pyclient.transaction-module.html#__package__
@@ -86,6 +84,7 @@ insight_pyclient.insight_api.InsightApi.timeout	insight_pyclient.insight_api.Ins
 insight_pyclient.insight_api.InsightApi.max_wait_time	insight_pyclient.insight_api.InsightApi-class.html#max_wait_time
 insight_pyclient.insight_api.InsightApi.get_block_hash	insight_pyclient.insight_api.InsightApi-class.html#get_block_hash
 insight_pyclient.transaction.Transaction	insight_pyclient.transaction.Transaction-class.html
+insight_pyclient.transaction.Transaction.gain_for_address	insight_pyclient.transaction.Transaction-class.html#gain_for_address
 insight_pyclient.transaction.Transaction.__init__	insight_pyclient.transaction.Transaction-class.html#__init__
 insight_pyclient.transaction.TransactionInput	insight_pyclient.transaction.TransactionInput-class.html
 insight_pyclient.transaction.TransactionInput.__init__	insight_pyclient.transaction.TransactionInput-class.html#__init__
