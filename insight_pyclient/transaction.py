@@ -50,7 +50,7 @@ class TransactionOutput(object):
     """
 
     def __init__(self, parsed_json):
-        self.value = parsed_json["value"]
+        self.value = float(parsed_json["value"])
         self.n = parsed_json["n"]
         self.spentTxId = parsed_json["spentTxId"]
         self.spentIndex = parsed_json["spentIndex"]
@@ -118,3 +118,20 @@ class Transaction(object):
             self.outputs.append(TransactionOutput(item))
         for item in parsed["vin"]:
             self.inputs.append(TransactionInput(item))
+
+    def gain_for_address(self, address):
+        """
+        This method allows to get the gain of a specific address for this transaction
+        @param address: The bitcoin address we wish to get details about
+        @type address: String
+        @return: The sum gained or lost
+        @rtype: Float
+        """
+        total = 0
+        for inp in self.inputs:
+            if inp.addr == address:
+                total -= inp.value
+        for out in self.outputs:
+            if address in out.scriptPubKey.addresses:
+                total += out.value
+        return total
