@@ -40,7 +40,10 @@ class Address(object):
         self.unconfirmedBalanceSat = parsed["unconfirmedBalanceSat"]
         self.unconfirmedTxAppearances = parsed["unconfirmedTxApperances"]
         self.txAppearances = parsed["txApperances"]
-        self.transactions = parsed["transactions"]
+        if "transactions" in parsed:
+            self.transactions = parsed["transactions"]
+        else:
+            self.transactions = None
 
 
 class UnspentOutput(object):
