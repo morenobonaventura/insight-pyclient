@@ -8,7 +8,7 @@ def read(fname):
 
 setup(
     name="insight_pyclient",
-    version="0.1.3",
+    version="0.1.4",
     author="Thibault de Balthasar",
     author_email="contact (@) thibaultdebalt [.] fr",
     description=("A client for Bitpay Insight API"),
