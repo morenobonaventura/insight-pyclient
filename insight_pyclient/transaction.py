@@ -34,7 +34,7 @@ class TransactionInput(object):
         self.value = parsed_json["value"]
         self.doubleSpentTxID = parsed_json["doubleSpentTxID"]
         self.scriptSigAsm = parsed_json["scriptSig"]["asm"]
-        self.scriptSigHex = parsed_json["scriptSig"]["hex"]
+        self.scriptSigHex = parsed_json["scriptSig"].get("hex")
 
 
 class TransactionOutput(object):
@@ -67,7 +67,7 @@ class TransactionOutput(object):
         """
 
         def __init__(self, parsed_json):
-            self.hex = parsed_json["hex"]
+            self.hex = parsed_json.get("hex")
             self.asm = parsed_json["asm"]
             self.addresses = parsed_json["addresses"]
             self.type = parsed_json["type"]
