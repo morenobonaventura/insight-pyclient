@@ -52,9 +52,9 @@ class TransactionOutput(object):
     def __init__(self, parsed_json):
         self.value = float(parsed_json["value"])
         self.n = parsed_json["n"]
-        self.spentTxId = parsed_json["spentTxId"]
-        self.spentIndex = parsed_json["spentIndex"]
-        self.spentHeight = parsed_json["spentHeight"]
+        self.spentTxId = parsed_json.get("spentTxId")
+        self.spentIndex = parsed_json.get("spentIndex")
+        self.spentHeight = parsed_json.get("spentHeight")
         self.scriptPubKey = TransactionOutput.ScriptPublicKey(parsed_json["scriptPubKey"])
 
     class ScriptPublicKey(object):
